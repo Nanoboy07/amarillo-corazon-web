@@ -153,11 +153,29 @@
 @keyframes sway { 0%,100% { transform: rotate(-3deg) } 50% { transform: rotate(3deg) } }
 @keyframes pulse-heart { 0%,100% { transform: scale(1) } 50% { transform: scale(1.12) } }
 @keyframes message-in { from { opacity: 0; transform: translateY(10px) scale(.98) } to { opacity: 1; transform: translateY(0) scale(1) } }
+@keyframes puzzle-away { to { opacity: 0; transform: scale(.75) rotate(8deg); } }
+@keyframes grow-stem { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes open-petal { from { opacity: 0; transform: translate(-50%, -100%) rotate(var(--petal-rotation)) scaleY(.05); } to { opacity: 1; transform: translate(-50%, -100%) rotate(var(--petal-rotation)) scaleY(1); } }
+@keyframes center-pop { from { opacity: 0; transform: translate(-50%, -50%) scale(0); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 
 @utility flower-float { animation: floaty 7s ease-in-out infinite; }
 @utility flower-sway { animation: sway 5s ease-in-out infinite; transform-origin: bottom center; }
 @utility heart-pulse { animation: pulse-heart 1.6s ease-in-out infinite; }
 @utility message-in { animation: message-in .35s ease-out both; }
+@utility puzzle-piece-revealed { animation: puzzle-away .5s ease-in forwards; }
+
+.sunflower-scene { position: relative; width: 16rem; height: 22rem; margin: 2rem auto 0; }
+.sunflower-stem { position: absolute; bottom: 0; left: calc(50% - .5rem); width: 1rem; height: 14rem; border: 2px solid var(--foreground); border-radius: 999px; background: oklch(.55 .14 135); transform: scaleY(0); transform-origin: bottom; }
+.sunflower-leaf { position: absolute; bottom: 5rem; width: 5rem; height: 2.7rem; border: 2px solid var(--foreground); background: oklch(.65 .15 135); opacity: 0; }
+.sunflower-leaf-left { left: 3rem; border-radius: 90% 10% 90% 10%; transform: rotate(25deg); }
+.sunflower-leaf-right { right: 3rem; bottom: 8rem; border-radius: 10% 90% 10% 90%; transform: rotate(-25deg); }
+.sunflower-head { position: absolute; top: 5rem; left: 50%; width: 10rem; height: 10rem; transform: translateX(-50%); }
+.sunflower-petal { --petal-rotation: 0deg; position: absolute; left: 50%; top: 50%; width: 2.4rem; height: 5.2rem; border: 2px solid var(--foreground); border-radius: 70% 70% 48% 48%; background: var(--primary); opacity: 0; transform-origin: bottom center; transform: translate(-50%, -100%) rotate(var(--petal-rotation)) scaleY(.05); }
+.sunflower-center { position: absolute; left: 50%; top: 50%; width: 5rem; height: 5rem; border: 3px solid var(--foreground); border-radius: 999px; background: radial-gradient(circle at 35% 35%, var(--honey), oklch(.38 .09 55)); opacity: 0; transform: translate(-50%, -50%) scale(0); }
+.sunflower-scene.is-bloomed .sunflower-stem { animation: grow-stem 1.2s cubic-bezier(.22,.8,.32,1) forwards; }
+.sunflower-scene.is-bloomed .sunflower-leaf { opacity: 1; transition: opacity .5s ease 1s; }
+.sunflower-scene.is-bloomed .sunflower-petal { animation: open-petal .8s cubic-bezier(.22,.8,.32,1) 1.15s forwards; }
+.sunflower-scene.is-bloomed .sunflower-center { animation: center-pop .55s cubic-bezier(.22,.8,.32,1) 1.65s forwards; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
