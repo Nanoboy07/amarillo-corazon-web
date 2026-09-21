@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ExternalLink, Music2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { Button } from "@/components/ui/button";
+import coupleAsset from "@/assets/nosotros.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -65,13 +66,45 @@ function Flower({ small = false }: { small?: boolean }) {
   );
 }
 
+function BloomingSunflower() {
+  const flowerRef = useRef<HTMLDivElement>(null);
+  const [bloomed, setBloomed] = useState(false);
+
+  useEffect(() => {
+    const flower = flowerRef.current;
+    if (!flower) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) setBloomed(true);
+    }, { threshold: 0.45 });
+    observer.observe(flower);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={flowerRef} className={`sunflower-scene ${bloomed ? "is-bloomed" : ""}`} aria-label="Un girasol floreciendo">
+      <div className="sunflower-stem" />
+      <div className="sunflower-leaf sunflower-leaf-left" />
+      <div className="sunflower-leaf sunflower-leaf-right" />
+      <div className="sunflower-head">
+        {Array.from({ length: 16 }).map((_, index) => <span key={index} className="sunflower-petal" style={{ "--petal-rotation": `${index * 22.5}deg` } as CSSProperties} />)}
+        <span className="sunflower-center" />
+      </div>
+    </div>
+  );
+}
+
 function Index() {
   const [active, setActive] = useState(0);
+  const [revealed, setRevealed] = useState<number[]>([]);
+
+  const revealPiece = (index: number) => {
+    setRevealed((current) => current.includes(index) ? current : [...current, index]);
+  };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 opacity-45" aria-hidden="true">
-        {Array.from({ length: 18 }).map((_, index) => (
+        {Array.from({ length: 28 }).map((_, index) => (
           <div key={index} className="flower-float absolute" style={{ left: `${(index * 29) % 96}%`, top: `${4 + ((index * 41) % 92)}%`, animationDelay: `${-(index % 7)}s` }}>
             <Flower small />
           </div>
@@ -133,7 +166,37 @@ function Index() {
           </div>
         </section>
 
-        <footer className="mt-24 text-center font-display text-lg font-bold text-foreground/70">Hecho a mano, con flores amarillas y mucho <span className="text-accent">♥</span></footer>
+        <section className="mt-24 sm:mt-32" aria-labelledby="rompecabezas">
+          <h2 id="rompecabezas" className="mb-2 text-center font-display text-4xl font-bold sm:text-5xl">Una imagen escondida <span className="heart-pulse inline-block text-accent">♥</span></h2>
+          <p className="mx-auto mb-9 max-w-lg text-center font-semibold text-muted-foreground">Tocá cada cuadrito para descubrir lo que hay detrás.</p>
+          <div className="overflow-hidden rounded-3xl border-2 border-foreground bg-card p-3 shadow-[9px_9px_0_var(--primary)] sm:p-4">
+            <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted">
+              <img src={coupleAsset.url} alt="Una pareja compartiendo una flor amarilla" className="h-full w-full object-cover" />
+              <div className="absolute inset-0 grid grid-cols-3 grid-rows-4">
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <Button
+                    key={index}
+                    variant="flower"
+                    onClick={() => revealPiece(index)}
+                    aria-label={revealed.includes(index) ? `Parte ${index + 1} descubierta` : `Descubrir parte ${index + 1}`}
+                    className={`h-auto min-h-0 rounded-none border border-background/50 p-0 text-2xl shadow-none hover:translate-y-0 hover:shadow-none ${index % 3 === 1 ? "bg-secondary" : index % 3 === 2 ? "bg-accent" : "bg-primary"} ${revealed.includes(index) ? "puzzle-piece-revealed pointer-events-none" : ""}`}
+                  >
+                    <span aria-hidden="true">{index % 2 === 0 ? "🌼" : "♥"}</span>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <p className="mt-5 text-center text-sm font-bold text-foreground/60">{revealed.length === 12 ? "¡Sorpresa! Así de lindo se siente elegirte ♥" : `${revealed.length} de 12 descubiertos`}</p>
+        </section>
+
+        <section className="mt-24 text-center sm:mt-32" aria-labelledby="final">
+          <h2 id="final" className="font-display text-4xl font-bold sm:text-5xl">Y esta florece para vos</h2>
+          <p className="mt-3 font-semibold text-muted-foreground">Porque lo nuestro también sigue creciendo.</p>
+          <BloomingSunflower />
+        </section>
+
+        <footer className="mt-12 text-center font-display text-lg font-bold text-foreground/70">Hecho a mano, con flores amarillas y mucho <span className="text-accent">♥</span></footer>
       </div>
     </main>
   );
