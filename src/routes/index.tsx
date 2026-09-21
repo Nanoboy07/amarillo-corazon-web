@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ExternalLink, Music2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { Button } from "@/components/ui/button";
 import coupleAsset from "@/assets/nosotros.png.asset.json";
@@ -86,7 +86,7 @@ function BloomingSunflower() {
       <div className="sunflower-leaf sunflower-leaf-left" />
       <div className="sunflower-leaf sunflower-leaf-right" />
       <div className="sunflower-head">
-        {Array.from({ length: 16 }).map((_, index) => <span key={index} className="sunflower-petal" style={{ "--petal-rotation": `${index * 22.5}deg` } as React.CSSProperties} />)}
+        {Array.from({ length: 16 }).map((_, index) => <span key={index} className="sunflower-petal" style={{ "--petal-rotation": `${index * 22.5}deg` } as CSSProperties} />)}
         <span className="sunflower-center" />
       </div>
     </div>
